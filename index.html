@@ -51,7 +51,7 @@
       <p>Mit einem Klick öffnet sich dein E-Mail-Programm mit Empfänger, Betreff und vorbereitetem Text. Du kannst den Text vor dem Senden anpassen.</p>
 
       <div class="cta">
-        <a id="sendLink" class="btn btn-primary">E-Mail öffnen</a>
+        <button id="sendBtn" class="btn btn-primary">E-Mail öffnen</button>
         <button id="copyBtn" class="btn btn-ghost">Text in Zwischenablage</button>
       </div>
 
@@ -60,13 +60,13 @@
       </p>
 
       <script>
-        // Hilfsfunktion: Zeilen mit CRLF verbinden (vermeidet Extra-Leerzeilen)
+        // Hilfsfunktion: Zeilen mit CRLF verbinden (verhindert „Geister“-Leerzeilen in einigen Mail-Apps)
         function crlfJoin(lines){ return lines.join('\r\n'); }
 
         const to = "Gremiengeschaeftsstelle@SWR.de";
         const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
 
-        // Aufzählung mit Bindestrichen statt •, keine Leerzeilen dazwischen
+        // Liste mit Bindestrich, KEINE Leerzeilen zwischen Punkten
         const bodyLines = [
           "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
           "",
@@ -83,15 +83,25 @@
           "Mit freundlichen Grüßen",
           "ein Eisenbahn-Romantik Fan"
         ];
-
         const body = crlfJoin(bodyLines);
 
-        // Nur href setzen, KEIN zusätzlicher Click-Handler -> verhindert doppeltes Öffnen
+        // Mail-Link vorbereiten
         const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        const sendLink = document.getElementById('sendLink');
-        sendLink.href = mailto;
 
-        // Kopier-Button: Text in Zwischenablage
+        // Button-Logik: Debounce gegen Doppel-Öffnen
+        const sendBtn = document.getElementById('sendBtn');
+        let opened = false;
+        sendBtn.addEventListener('click', () => {
+          if (opened) return;          // verhindert Doppelklick/Doppel-Trigger
+          opened = true;
+          // sofort öffnen
+          window.location.href = mailto;
+          // Button kurz deaktivieren, dann wieder freigeben
+          sendBtn.disabled = true;
+          setTimeout(() => { opened = false; sendBtn.disabled = false; }, 1500);
+        });
+
+        // Kopierbutton
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.addEventListener('click', async () => {
           try {
