@@ -14,7 +14,8 @@
       margin:0;
       background:radial-gradient(1200px 800px at 80% -20%, #1f2937 0%, var(--bg) 50%);
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,
+        "Apple Color Emoji","Segoe UI Emoji";
     }
     .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
     .card{
@@ -37,7 +38,8 @@
     .small{font-size:.9rem;color:var(--muted)}
     .foot{margin-top:18px}
     .code{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,
+        "Liberation Mono","Courier New",monospace;
       background:rgba(255,255,255,0.06); padding:6px 8px; border-radius:8px;
     }
   </style>
@@ -58,12 +60,13 @@
       </p>
 
       <script>
-        // Hilfsfunktion: Textzeilen mit CRLF (\r\n) zusammenbauen
+        // Hilfsfunktion: Zeilen mit CRLF verbinden (vermeidet Extra-Leerzeilen)
         function crlfJoin(lines){ return lines.join('\r\n'); }
 
         const to = "Gremiengeschaeftsstelle@SWR.de";
         const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
 
+        // Aufzählung mit Bindestrichen statt •, keine Leerzeilen dazwischen
         const bodyLines = [
           "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
           "",
@@ -72,10 +75,10 @@
           "Dieses Format vereint Kultur, Technik, Geschichte und Reisen und erfüllt den öffentlich-rechtlichen Auftrag auf besondere Weise. Es wird nicht nur im Fernsehen, sondern auch über die ARD-Mediathek und den YouTube-Kanal von Eisenbahn-Romantik vielfach genutzt und ist damit ein deutlicher Beleg für seine anhaltende Relevanz.",
           "",
           "Ich bitte um eine schriftliche Begründung,",
-          "• nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
-          "• wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
-          "• warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
-          "• und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
+          "- nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
+          "- wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
+          "- warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
+          "- und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
           "",
           "Mit freundlichen Grüßen",
           "ein Eisenbahn-Romantik Fan"
@@ -83,18 +86,12 @@
 
         const body = crlfJoin(bodyLines);
 
+        // Nur href setzen, KEIN zusätzlicher Click-Handler -> verhindert doppeltes Öffnen
         const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Link setzen
         const sendLink = document.getElementById('sendLink');
         sendLink.href = mailto;
 
-        // Fallback für zickige In-App-Browser
-        sendLink.addEventListener('click', () => {
-          setTimeout(() => { try { window.location.href = mailto; } catch(_) {} }, 0);
-        });
-
-        // Kopierbutton
+        // Kopier-Button: Text in Zwischenablage
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.addEventListener('click', async () => {
           try {
