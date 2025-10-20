@@ -15,8 +15,8 @@
       background:radial-gradient(1200px 800px at 80% -20%, #1f2937 0%, var(--bg) 50%);
       color:var(--text);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      display:grid; place-items:center; min-height:100vh; padding:24px;
     }
-    .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
     .card{
       max-width:720px;width:100%;
       background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));
@@ -38,68 +38,68 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <main class="card">
-      <h1>Programmbeschwerde – Eisenbahn-Romantik muss bleiben 🚂</h1>
-      <p>Mit einem Klick öffnet sich dein E-Mail-Programm mit Empfänger, Betreff und vorbereitetem Text. Du kannst den Text vor dem Senden anpassen.</p>
+  <main class="card">
+    <h1>Programmbeschwerde – Eisenbahn-Romantik muss bleiben 🚂</h1>
+    <p>Mit einem Klick öffnet sich dein E-Mail-Programm mit Empfänger, Betreff und vorbereitetem Text. Du kannst den Text vor dem Senden anpassen.</p>
 
-      <div class="cta">
-        <button id="sendBtn" class="btn btn-primary">E-Mail öffnen</button>
-        <button id="copyBtn" class="btn btn-ghost">Text in Zwischenablage</button>
-      </div>
+    <div class="cta">
+      <button id="sendBtn" class="btn btn-primary">E-Mail öffnen</button>
+      <button id="copyBtn" class="btn btn-ghost">Text in Zwischenablage</button>
+    </div>
 
-      <p class="small">Es öffnet sich eine neue E-Mail direkt an <code>Gremiengeschaeftsstelle@SWR.de</code>.</p>
+    <p class="small">Es öffnet sich eine neue E-Mail direkt an <code>Gremiengeschaeftsstelle@SWR.de</code>.</p>
+  </main>
 
-      <script>
-        const crlf = lines => lines.join('\r\n');
-        const to = "Gremiengeschaeftsstelle@SWR.de";
-        const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
-        const BULLET = "• ";
+  <script>
+    // Zeilen stabil mit CRLF verbinden
+    const crlf = lines => lines.join('\r\n');
 
-        const body = crlf([
-          "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
-          "",
-          "hiermit lege ich Programmbeschwerde gegen die geplante Einstellung der SWR-Sendung Eisenbahn-Romantik ein und bitte Sie, sich für den Erhalt der Sendereihe und der Redaktion einzusetzen.",
-          "",
-          "Dieses Format vereint Kultur, Technik, Geschichte und Reisen und erfüllt den öffentlich-rechtlichen Auftrag auf besondere Weise. Es wird nicht nur im Fernsehen, sondern auch über die ARD-Mediathek und den YouTube-Kanal von Eisenbahn-Romantik vielfach genutzt und ist damit ein deutlicher Beleg für seine anhaltende Relevanz.",
-          "",
-          "Ich bitte um eine schriftliche Begründung zu folgenden Punkten:",
-          "",
-          BULLET + "nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
-          BULLET + "wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
-          BULLET + "warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
-          BULLET + "und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
-          "",
-          "Mit freundlichen Grüßen",
-          "ein Eisenbahn-Romantik-Fan"
-        ]);
+    const to = "Gremiengeschaeftsstelle@SWR.de";
+    const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
+    const BULLET = "· "; // Mittelpunktszeichen statt Bullet
 
-        const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const body = crlf([
+      "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
+      "",
+      "hiermit lege ich Programmbeschwerde gegen die geplante Einstellung der SWR-Sendung Eisenbahn-Romantik ein und bitte Sie, sich für den Erhalt der Sendereihe und der Redaktion einzusetzen.",
+      "",
+      "Dieses Format vereint Kultur, Technik, Geschichte und Reisen und erfüllt den öffentlich-rechtlichen Auftrag auf besondere Weise. Es wird nicht nur im Fernsehen, sondern auch über die ARD-Mediathek und den YouTube-Kanal von Eisenbahn-Romantik vielfach genutzt und ist damit ein deutlicher Beleg für seine anhaltende Relevanz.",
+      "",
+      "Ich bitte um eine schriftliche Begründung zu folgenden Punkten:",
+      "",
+      BULLET + "nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
+      BULLET + "wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
+      BULLET + "warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
+      BULLET + "und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
+      "",
+      "Mit freundlichen Grüßen",
+      "ein Eisenbahn-Romantik-Fan"
+    ]);
 
-        // Button: Mail nur einmal öffnen
-        const sendBtn = document.getElementById('sendBtn');
-        let busy = false;
-        sendBtn.addEventListener('click', () => {
-          if (busy) return;
-          busy = true;
-          window.location.href = mailto;
-          sendBtn.disabled = true;
-          setTimeout(() => { busy = false; sendBtn.disabled = false; }, 1500);
-        });
+    const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        // Kopieren
-        const copyBtn = document.getElementById('copyBtn');
-        copyBtn.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(body);
-            copyBtn.textContent = 'Text kopiert ✔';
-            setTimeout(() => copyBtn.textContent = 'Text in Zwischenablage', 1600);
-          } catch {
-            alert('Kopieren nicht erlaubt – bitte manuell markieren und kopieren.');
-          }
-        });
-      </script>
-    </main>
-  </div>
+    // Mail EINMAL öffnen (Debounce)
+    const sendBtn = document.getElementById('sendBtn');
+    let busy = false;
+    sendBtn.addEventListener('click', () => {
+      if (busy) return;
+      busy = true;
+      window.location.href = mailto;
+      sendBtn.disabled = true;
+      setTimeout(() => { busy = false; sendBtn.disabled = false; }, 1200);
+    });
+
+    // Kopier-Button
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(body);
+        copyBtn.textContent = 'Text kopiert ✔';
+        setTimeout(() => copyBtn.textContent = 'Text in Zwischenablage', 1600);
+      } catch {
+        alert('Kopieren nicht erlaubt – bitte manuell markieren und kopieren.');
+      }
+    });
+  </script>
 </body>
 </html>
