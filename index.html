@@ -14,8 +14,7 @@
       margin:0;
       background:radial-gradient(1200px 800px at 80% -20%, #1f2937 0%, var(--bg) 50%);
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,
-        "Apple Color Emoji","Segoe UI Emoji";
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
     }
     .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
     .card{
@@ -37,11 +36,6 @@
     .btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.18)}
     .small{font-size:.9rem;color:var(--muted)}
     .foot{margin-top:18px}
-    .code{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,
-        "Liberation Mono","Courier New",monospace;
-      background:rgba(255,255,255,0.06); padding:6px 8px; border-radius:8px;
-    }
   </style>
 </head>
 <body>
@@ -56,17 +50,19 @@
       </div>
 
       <p class="small foot">
-        Es öffnet sich eine neue E-Mail direkt an <span class="code">Gremiengeschaeftsstelle@SWR.de</span>.
+        Es öffnet sich eine neue E-Mail direkt an <code>Gremiengeschaeftsstelle@SWR.de</code>.
       </p>
 
       <script>
-        // Hilfsfunktion: Zeilen mit CRLF verbinden (verhindert „Geister“-Leerzeilen in einigen Mail-Apps)
-        function crlfJoin(lines){ return lines.join('\r\n'); }
+        // CRLF-Join: vermeidet Formatierungs-Sonderheiten in manchen Mail-Apps
+        const crlfJoin = (lines) => lines.join('\r\n');
 
         const to = "Gremiengeschaeftsstelle@SWR.de";
         const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
 
-        // Liste mit Bindestrich, KEINE Leerzeilen zwischen Punkten
+        // Zero-Width Space nach dem Minus unterbindet Auto-Listenformatierung
+        const BULLET = "-\u200B "; // Minus + Zero-Width Space + normales Leerzeichen
+
         const bodyLines = [
           "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
           "",
@@ -75,40 +71,37 @@
           "Dieses Format vereint Kultur, Technik, Geschichte und Reisen und erfüllt den öffentlich-rechtlichen Auftrag auf besondere Weise. Es wird nicht nur im Fernsehen, sondern auch über die ARD-Mediathek und den YouTube-Kanal von Eisenbahn-Romantik vielfach genutzt und ist damit ein deutlicher Beleg für seine anhaltende Relevanz.",
           "",
           "Ich bitte um eine schriftliche Begründung,",
-          "- nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
-          "- wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
-          "- warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
-          "- und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
+          BULLET + "nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
+          BULLET + "wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
+          BULLET + "warum ausgerechnet dieses beliebte und kulturell wertvolle Format eingestellt werden soll,",
+          BULLET + "und was der Rundfunkrat konkret unternimmt, damit diese erfolgreiche Sendung künftig weiter produziert werden kann.",
           "",
           "Mit freundlichen Grüßen",
           "ein Eisenbahn-Romantik Fan"
         ];
-        const body = crlfJoin(bodyLines);
 
-        // Mail-Link vorbereiten
+        const body = crlfJoin(bodyLines);
         const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        // Button-Logik: Debounce gegen Doppel-Öffnen
+        // Button: einmaliges Öffnen (Debounce)
         const sendBtn = document.getElementById('sendBtn');
         let opened = false;
         sendBtn.addEventListener('click', () => {
-          if (opened) return;          // verhindert Doppelklick/Doppel-Trigger
+          if (opened) return;
           opened = true;
-          // sofort öffnen
           window.location.href = mailto;
-          // Button kurz deaktivieren, dann wieder freigeben
           sendBtn.disabled = true;
-          setTimeout(() => { opened = false; sendBtn.disabled = false; }, 1500);
+          setTimeout(() => { opened = false; sendBtn.disabled = false; }, 1200);
         });
 
-        // Kopierbutton
+        // Kopieren
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.addEventListener('click', async () => {
           try {
             await navigator.clipboard.writeText(body);
             copyBtn.textContent = 'Text kopiert ✔';
-            setTimeout(()=> copyBtn.textContent = 'Text in Zwischenablage', 1600);
-          } catch(e){
+            setTimeout(() => copyBtn.textContent = 'Text in Zwischenablage', 1600);
+          } catch {
             alert('Kopieren nicht erlaubt – bitte manuell markieren und kopieren.');
           }
         });
