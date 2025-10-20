@@ -5,37 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Programmbeschwerde – Eisenbahn-Romantik muss bleiben</title>
   <style>
-    :root{
-      --bg:#0b0f14; --card:#111827; --text:#e5e7eb; --muted:#9ca3af;
-      --brand:#22c55e; --brandHover:#16a34a;
-    }
+    :root{ --bg:#0b0f14; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --brand:#22c55e; --brandHover:#16a34a; }
     html,body{height:100%}
-    body{
-      margin:0;
-      background:radial-gradient(1200px 800px at 80% -20%, #1f2937 0%, var(--bg) 50%);
-      color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-    }
+    body{margin:0;background:radial-gradient(1200px 800px at 80% -20%, #1f2937 0%, var(--bg) 50%);color:var(--text);
+         font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
     .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
-    .card{
-      max-width:720px;width:100%;
-      background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.35);
-      padding:28px 24px;
-    }
+    .card{max-width:720px;width:100%;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+          border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:28px 24px}
     h1{margin:0 0 8px;font-size:clamp(22px,3.2vw,34px);line-height:1.15}
     p{margin:8px 0 0;color:var(--muted)}
     .cta{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
-    .btn{
-      appearance:none;border:0;border-radius:12px;padding:14px 18px;
-      font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center
-    }
+    .btn{appearance:none;border:0;border-radius:12px;padding:14px 18px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
     .btn-primary{background:var(--brand);color:#0a0a0a}
     .btn-primary:hover{background:var(--brandHover)}
-    .btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.18)}
+    .btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.18)}
     .small{font-size:.9rem;color:var(--muted)}
-    .foot{margin-top:18px}
   </style>
 </head>
 <body>
@@ -49,27 +33,22 @@
         <button id="copyBtn" class="btn btn-ghost">Text in Zwischenablage</button>
       </div>
 
-      <p class="small foot">
-        Es öffnet sich eine neue E-Mail direkt an <code>Gremiengeschaeftsstelle@SWR.de</code>.
-      </p>
+      <p class="small">Es öffnet sich eine neue E-Mail direkt an <code>Gremiengeschaeftsstelle@SWR.de</code>.</p>
 
       <script>
-        // CRLF-Join: vermeidet Formatierungs-Sonderheiten in manchen Mail-Apps
-        const crlfJoin = (lines) => lines.join('\r\n');
+        // CRLF nutzen
+        const crlf = (lines) => lines.join('\r\n');
+        const ZWSP = '\u200B'; // Zero-Width Space (unsichtbar)
+        const BULLET = ZWSP + '• ';
 
         const to = "Gremiengeschaeftsstelle@SWR.de";
         const subject = "Programmbeschwerde gemäß § 11 SWR-Staatsvertrag";
 
-        // Zero-Width Space nach dem Minus unterbindet Auto-Listenformatierung
-        const BULLET = "-\u200B "; // Minus + Zero-Width Space + normales Leerzeichen
-
-        const bodyLines = [
+        const body = crlf([
           "Sehr geehrte Damen und Herren des SWR-Rundfunkrats,",
           "",
           "hiermit lege ich Programmbeschwerde gegen die geplante Einstellung der SWR-Sendung Eisenbahn-Romantik ein und bitte Sie, sich für den Erhalt der Sendereihe und der Redaktion einzusetzen.",
-          "",
           "Dieses Format vereint Kultur, Technik, Geschichte und Reisen und erfüllt den öffentlich-rechtlichen Auftrag auf besondere Weise. Es wird nicht nur im Fernsehen, sondern auch über die ARD-Mediathek und den YouTube-Kanal von Eisenbahn-Romantik vielfach genutzt und ist damit ein deutlicher Beleg für seine anhaltende Relevanz.",
-          "",
           "Ich bitte um eine schriftliche Begründung,",
           BULLET + "nach welchen Kriterien beim SWR über die Beibehaltung oder Absetzung von Sendungen entschieden wird,",
           BULLET + "wie die Zuschauerresonanz und Reichweite über alle Ausspielwege – also Fernsehen, Mediathek und Online-Kanäle – in diese Abwägung eingeflossen sind,",
@@ -78,27 +57,29 @@
           "",
           "Mit freundlichen Grüßen",
           "ein Eisenbahn-Romantik Fan"
-        ];
+        ]);
 
-        const body = crlfJoin(bodyLines);
         const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        // Button: einmaliges Öffnen (Debounce)
+        // Einmaliges Öffnen (kein href am Button, nur JS → keine Doppel-Öffnung)
         const sendBtn = document.getElementById('sendBtn');
-        let opened = false;
+        let busy = false;
         sendBtn.addEventListener('click', () => {
-          if (opened) return;
-          opened = true;
+          if (busy) return;
+          busy = true;
           window.location.href = mailto;
           sendBtn.disabled = true;
-          setTimeout(() => { opened = false; sendBtn.disabled = false; }, 1200);
+          setTimeout(() => { busy = false; sendBtn.disabled = false; }, 1200);
         });
 
         // Kopieren
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.addEventListener('click', async () => {
           try {
-            await navigator.clipboard.writeText(body);
+            await navigator.clipboard.writeText(
+              // gleiche Zeilen wie oben, aber ohne ZWSP vor den Bullets fürs manuelle Kopieren:
+              body.replaceAll(ZWSP, '')
+            );
             copyBtn.textContent = 'Text kopiert ✔';
             setTimeout(() => copyBtn.textContent = 'Text in Zwischenablage', 1600);
           } catch {
